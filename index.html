@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
+</head>
+<body>
+<center>
+    <script>
+    var config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 200 }
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update,
+        }
+    };
+
+    var game = new Phaser.Game(config);
+        
+    var blocks = ['flag', 'move', 'right', 'left', 'end', 'loop', 'if', '0', '1', '2', '3', '4', '5', '6', '7', 
+                 '8', '9', '10', 'inf', '-1', 'dice'];
+    var actions = {
+        //move: function ;
+    };
+    var indentBlocks = ['loop', 'if'];
+    var valueBlocks = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'inf', '-1', 'dice'];
+    
+    /*************************/
+    // Enter your code here: //
+    /*************************/
+    var code = 'flag move loop 9 move right if dice left end end'.split(` `);
+    var keySpace;
+
+    function preload ()
+    {
+        this.load.image('bluesmile', 'graphics/bluesmile.png');
+        this.load.image('redsmile', 'graphics/redsmile.png');
+        this.load.image('redsmile', 'graphics/redsmile.png');
+        this.load.image('blacktile', 'graphics/blacktile.png');
+        this.load.image('whitetile', 'graphics/whitetile.png');
+        for (let i = 0; i < blocks.length; i++){
+            this.load.image(blocks[i], 'graphics/' + blocks[i] + '.png');
+        }
+    };
+        
+    function create ()
+    {
+        // Initialise input
+        keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+        // Render grid
+        for (let i=0; i<16; i++){
+            for (let j=0; j<8; j++){
+                this.add.image(i*50, j*50, ((i+j)%2==0)? 'blacktile':'whitetile').setOrigin(0, 0);
+            }
+        }
+        
+        // Render code blocks
+        let layer = 0;
+        let x = -25;
+        for (let i=0; i < code.length; i++){
+            if (code[i] === 'end'){
+                layer -= 1;
+            };
+            
+            x += 50;
+            let y = 600 - layer*25;
+            
+            if (valueBlocks.indexOf(code[i]) >= 0){
+                x -= 50;
+                y -= 50;
+            };
+            
+            this.add.image(x, y, code[i]).setOrigin(0.5, 1);
+            
+            if (indentBlocks.indexOf(code[i]) >= 0){
+                layer += 1;
+            };
+            
+            this.add.image(playerpos[0]*50+25, playerpos[1]*50+25, 'bluesmile').setScale(.45);
+        }
+    }
+
+    var directions = [[1, 0], [0, -1], [-1, 0], [0, 1]];
+    
+    var playerpos = [9, 5];
+    var playerdir = 0;
+    var pointerPos = 0;
+
+    function update()
+    {
+//        console.log(pointerPos)
+
+        if (keySpace.isDown){
+            pointerPos += 1;
+            console.log("hello")
+        }
+    }
+
+    function plusOne(){
+        pointerPos += 1;
+    }
+    </script>
+</center>
+</body>
+</html>
