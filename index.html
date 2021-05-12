@@ -37,7 +37,7 @@
     // Enter your code here: //
     /*************************/
     var code = 'flag move loop 9 move right if dice left end end'.split(` `);
-    var keySpace;
+    var keySpace
 
     function preload ()
     {
@@ -49,12 +49,13 @@
         for (let i = 0; i < blocks.length; i++){
             this.load.image(blocks[i], 'graphics/' + blocks[i] + '.png');
         }
+
+        // Initialise input
+        keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);  
     };
         
     function create ()
     {
-        // Initialise input
-        keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
         // Render grid
         for (let i=0; i<16; i++){
@@ -95,14 +96,16 @@
     var playerdir = 0;
     var pointerPos = 0;
 
+    var spacePrevPressed = false
+
     function update()
     {
-//        console.log(pointerPos)
-
-        if (keySpace.isDown){
+        keySpace.on('down', function(event) { 
+            spacePrevPressed = true
             pointerPos += 1;
             console.log("hello")
-        }
+            console.log(pointerPos)
+        });
     }
 
     function plusOne(){
