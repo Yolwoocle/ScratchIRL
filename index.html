@@ -22,22 +22,45 @@
             update: update,
         }
     };
-
     var game = new Phaser.Game(config);
-        
+    
+    var opcodes = {
+        flag: function() {},
+        move: function() {
+            console.log("pos: " + playerpos)
+            playerpos[0] += directions[playerdir][0]
+            playerpos[1] += directions[playerdir][1]
+        },
+        right: function() {
+            console.log("angle: " + playerdir)
+            playerdir = (playerdir - 1) % 4
+        },
+        left: function() {
+            console.log("angle: " + playerdir)
+            playerdir = (playerdir + 1) % 4
+        },
+        end: function() {},
+        loop: function() {},
+        if: function() {},
+    }
+
     var blocks = ['flag', 'move', 'right', 'left', 'end', 'loop', 'if', '0', '1', '2', '3', '4', '5', '6', '7', 
-                 '8', '9', '10', 'inf', '-1', 'dice'];
+                  '8', '9', '10', 'inf', '-1', 'dice', 'jumpto'];
     var actions = {
         //move: function ;
     };
     var indentBlocks = ['loop', 'if'];
     var valueBlocks = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'inf', '-1', 'dice'];
-    
-    /*************************/
-    // Enter your code here: //
-    /*************************/
-    var code = 'flag move loop 9 move right if dice left end end'.split(` `);
+    var cellSize = 50
     var keySpace
+
+    // Code variables
+    var pointerPos = 0;
+    var code = 'flag move loop 9 move right if dice left end end'.split() // <<<<<<<<<<< CODE HERE
+
+    var directions = [[1, 0], [0, -1], [-1, 0], [0, 1]];
+    var playerpos = [9, 5];
+    var playerdir = directions[0];
 
     function preload ()
     {
@@ -51,23 +74,43 @@
         }
 
         // Initialise input
-        keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);  
+        keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     };
-        
+    
     function create ()
     {
-
         // Render grid
         for (let i=0; i<16; i++){
             for (let j=0; j<8; j++){
-                this.add.image(i*50, j*50, ((i+j)%2==0)? 'blacktile':'whitetile').setOrigin(0, 0);
+                //this.add.image(i*cellSize, j*cellSize, ((i+j)%2==0)? 'blacktile':'whitetile').setOrigin(0, 0);
             }
         }
-        
+        //console.log(this)
+
         // Render code blocks
+        //renderCodeBlocks.call(this)
+        
+        //this.add.image(0, 10, 'bluesmile').setOrigin(0, 0);
+        //this.add.image(playerpos[0]*50+25, playerpos[1]*50+25, 'bluesmile').setScale(.45);
+    }
+
+    function update()
+    {
+        if (Phaser.Input.Keyboard.JustDown(keySpace)){
+            pointerPos += 1
+            console.log(`pos ${pointerPos}: ${code[pointerPos]}`)
+        }
+    }
+
+    function plusOne(){
+        pointerPos += 1;
+    }
+
+    function renderCodeBlocks(){
         let layer = 0;
         let x = -25;
         for (let i=0; i < code.length; i++){
+            // Indent blocks
             if (code[i] === 'end'){
                 layer -= 1;
             };
@@ -85,31 +128,7 @@
             if (indentBlocks.indexOf(code[i]) >= 0){
                 layer += 1;
             };
-            
-            this.add.image(playerpos[0]*50+25, playerpos[1]*50+25, 'bluesmile').setScale(.45);
         }
-    }
-
-    var directions = [[1, 0], [0, -1], [-1, 0], [0, 1]];
-    
-    var playerpos = [9, 5];
-    var playerdir = 0;
-    var pointerPos = 0;
-
-    var spacePrevPressed = false
-
-    function update()
-    {
-        keySpace.on('down', function(event) { 
-            spacePrevPressed = true
-            pointerPos += 1;
-            console.log("hello")
-            console.log(pointerPos)
-        });
-    }
-
-    function plusOne(){
-        pointerPos += 1;
     }
     </script>
 </center>
